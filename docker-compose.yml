@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  app:
+    build: .
+    command: sh -c "yarn install && yarn run dev"
+    ports:
+      - 3000:3000
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      PGHOST: host.docker.internal
+      PGDATABASE: todos 
+      PGUSER: postgres
+    depends_on:
+      - pg
+    restart: unless-stopped
+
+  pg:
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - todo-pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: todos
+
+volumes:
+  todo-pg-data:
